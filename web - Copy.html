@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eferleaf — From Leaf to Vest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config={theme:{extend:{colors:{leaf:{50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',300:'#86efac',400:'#4ade80',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#166534',900:'#14532d',950:'#052e16'}},fontFamily:{sans:['Inter','sans-serif'],serif:['Playfair Display','serif']}}}}
+  </script>
+  <style>
+    ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#f5f5f4}::-webkit-scrollbar-thumb{background:#bbf7d0;border-radius:3px}
+    @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(3deg)}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes leafDrift{0%{transform:translateY(-10%) translateX(0) rotate(0deg);opacity:0}10%{opacity:.5}90%{opacity:.5}100%{transform:translateY(110vh) translateX(80px) rotate(360deg);opacity:0}}
+    @keyframes pulse-ring{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.6);opacity:0}}
+    @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+    @keyframes scanLine{0%{top:0}100%{top:calc(100% - 2rem)}}
+    .animate-float{animation:float 6s ease-in-out infinite}
+    .animate-fade-in-up{animation:fadeInUp .8s ease-out forwards}
+    .animate-leaf-drift{animation:leafDrift 18s linear infinite}
+    .animate-leaf-drift-2{animation:leafDrift 22s linear infinite;animation-delay:6s}
+    .animate-leaf-drift-3{animation:leafDrift 20s linear infinite;animation-delay:12s}
+    .delay-100{animation-delay:.1s}.delay-200{animation-delay:.2s}.delay-300{animation-delay:.3s}.delay-400{animation-delay:.4s}
+    .leaf-pattern{background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q40 15 30 30 Q20 15 30 5Z' fill='none' stroke='%2322c55e' stroke-width='0.5' opacity='0.07'/%3E%3C/svg%3E")}
+    .journey-line::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#bbf7d0,#16a34a,#052e16,#16a34a,#bbf7d0);transform:translateX(-50%)}
+    @media(max-width:767px){.journey-line::before{left:24px}}
+    .qr-glow{box-shadow:0 0 50px rgba(34,197,94,.12),0 0 100px rgba(34,197,94,.05)}
+    .stat-shimmer{background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);background-size:200% 100%;animation:shimmer 3s infinite}
+    .scan-anim{animation:scanLine 2.5s ease-in-out infinite alternate}
+    .play-btn-ring::before{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(255,255,255,.4);animation:pulse-ring 2s ease-out infinite}
+    .care-num{counter-increment:care}.care-num::before{content:counter(care);display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;flex-shrink:0;font-size:.8rem;font-weight:500}
+    .sidebar-scroll::-webkit-scrollbar{width:4px}.sidebar-scroll::-webkit-scrollbar-thumb{background:#d6d3d1;border-radius:2px}
+    .custom-checkbox input:checked+div{background-color:#16a34a;border-color:#16a34a;color:#fff}
+    .custom-checkbox input:checked+div i{opacity:1}
+    .leaf-details{max-height:0;overflow:hidden;transition:max-height .4s ease-out,opacity .4s ease-out;opacity:0}
+    .leaf-item.open .leaf-details{max-height:600px;opacity:1}
+    .leaf-item.open .leaf-chev{transform:rotate(180deg)}
+    .card-img-wrap:hover img{transform:scale(1.05)}
+    .card-img-wrap{height:16rem}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .fade-video{animation:fadeIn .5s ease-in-out}
+    .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    /* Fallback placeholder untuk gambar yang gagal load */
+    .img-fallback{background:linear-gradient(135deg,#dcfce7,#bbf7d0);display:flex;align-items:center;justify-content:center;color:#15803d;font-size:.75rem;font-weight:500;text-align:center;padding:1rem;flex-direction:column;gap:.25rem}
+  </style>
+</head>
+<body class="bg-stone-50 font-sans text-stone-900 antialiased">
+
+<!-- Falling Leaves -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+  <div class="animate-leaf-drift absolute top-0 left-[8%] text-leaf-300 opacity-0 text-2xl">🍃</div>
+  <div class="animate-leaf-drift-2 absolute top-0 left-[35%] text-leaf-400 opacity-0 text-xl">🌿</div>
+  <div class="animate-leaf-drift-3 absolute top-0 left-[65%] text-leaf-200 opacity-0 text-3xl">🍃</div>
+  <div class="animate-leaf-drift absolute top-0 left-[88%] text-leaf-300 opacity-0 text-xl">🌿</div>
+</div>
+
+<!-- ========== NAVBAR ========== -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 h-20 flex items-center transition-all duration-300" style="background:rgba(250,250,249,.8);backdrop-filter:blur(12px)">
+  <div class="max-w-7xl mx-auto w-full px-6 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2 group">
+      <div class="w-9 h-9 bg-leaf-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300"><i data-lucide="leaf" class="w-5 h-5 text-white"></i></div>
+      <div><span class="font-serif text-lg font-medium tracking-tight text-stone-900">Eferleaf</span><span class="text-leaf-600 font-serif text-lg italic ml-1">Nyanavera</span></div>
+    </a>
+    <div class="hidden lg:flex items-center gap-6">
+      <a href="#about" class="text-sm font-medium text-stone-600 hover:text-leaf-700 transition-colors">About Me</a>
+      <a href="#journey" class="text-sm font-medium text-stone-600 hover:text-leaf-700 transition-colors">Product Journey</a>
+      <a href="#leaf-library" class="text-sm font-medium text-stone-600 hover:text-leaf-700 transition-colors">Leaf Library</a>
+      <a href="#sustainability" class="text-sm font-medium text-stone-600 hover:text-leaf-700 transition-colors">Impact</a>
+      <a href="#care" class="text-sm font-medium text-stone-600 hover:text-leaf-700 transition-colors">Care Instructions</a>
+      <a href="#community" class="text-sm font-medium text-stone-600 hover:text-leaf-700 transition-colors">Testimonial</a>
+      <a href="#future" class="text-sm font-medium text-stone-600 hover:text-leaf-700 transition-colors">Innovation</a>
+    </div>
+    <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-lg hover:bg-stone-100 transition-colors"><i data-lucide="menu" class="w-5 h-5 text-stone-700"></i></button>
+  </div>
+  <div id="mobileMenu" class="hidden absolute top-20 left-0 right-0 bg-white/95 backdrop-blur-md border-b border-stone-200 lg:hidden">
+    <div class="px-6 py-4 flex flex-col gap-3">
+      <a href="#about" class="text-sm font-medium text-stone-600 py-2">About Me</a>
+      <a href="#journey" class="text-sm font-medium text-stone-600 py-2">Product Journey</a>
+      <a href="#leaf-library" class="text-sm font-medium text-stone-600 py-2">Leaf Library</a>
+      <a href="#sustainability" class="text-sm font-medium text-stone-600 py-2">Impact</a>
+      <a href="#care" class="text-sm font-medium text-stone-600 py-2">Care Instructions</a>
+      <a href="#community" class="text-sm font-medium text-stone-600 py-2">Testimonial</a>
+      <a href="#future" class="text-sm font-medium text-stone-600 py-2">Innovation</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<section class="relative h-screen flex items-center justify-center overflow-hidden">
+  <div class="absolute inset-0">
+    <img src="https://picsum.photos/seed/ecoprint-leaves-fabric-wide/1920/1080.jpg" alt="Ecoprint" class="w-full h-full object-cover" style="transform:scale(1.05)">
+    <div class="absolute inset-0" style="background:linear-gradient(to bottom,rgba(5,46,22,.55),rgba(5,46,22,.25),rgba(250,250,249,.97))"></div>
+  </div>
+  <div class="relative z-10 max-w-3xl mx-auto text-center px-6 mt-20">
+    <div class="animate-fade-in-up opacity-0" style="animation-fill-mode:forwards">
+      <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-300 mb-6"><span class="w-8 h-px bg-leaf-400"></span> Ecoprint Vest Collection <span class="w-8 h-px bg-leaf-400"></span></span>
+    </div>
+    <h1 class="font-serif text-5xl md:text-7xl font-normal text-white leading-[1.1] tracking-tight animate-fade-in-up opacity-0 delay-100" style="animation-fill-mode:forwards">From <em class="text-leaf-300">Leaf</em><br>to Vest</h1>
+    <p class="mt-6 text-lg text-stone-200 leading-relaxed max-w-xl mx-auto animate-fade-in-up opacity-0 delay-200" style="animation-fill-mode:forwards">Setiap helai daun bercerita. Eferleaf Nyanavera mengubah kekayaan alam Indonesia menjadi vest ecoprint yang unik, berkelanjutan, dan penuh makna.</p>
+    <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up opacity-0 delay-300" style="animation-fill-mode:forwards">
+      <a href="#journey" class="inline-flex items-center gap-2 bg-leaf-600 text-white text-sm font-medium px-8 py-3.5 rounded-full hover:bg-leaf-500 transition-colors shadow-lg shadow-leaf-600/30">Lihat Proses <i data-lucide="arrow-down" class="w-4 h-4"></i></a>
+      <a href="#leaf-library" class="inline-flex items-center gap-2 text-white/80 text-sm font-medium px-8 py-3.5 rounded-full border border-white/20 hover:bg-white/10 hover:text-white transition-all"><i data-lucide="search" class="w-4 h-4"></i> Jelajahi Daun</a>
+    </div>
+    <div class="mt-16 grid grid-cols-3 gap-6 max-w-md mx-auto animate-fade-in-up opacity-0 delay-400" style="animation-fill-mode:forwards">
+      <div><div class="font-serif text-3xl text-white">100%</div><div class="text-xs text-leaf-300 mt-1">Alami</div></div>
+      <div><div class="font-serif text-3xl text-white">12+</div><div class="text-xs text-leaf-300 mt-1">Jenis Daun</div></div>
+      <div><div class="font-serif text-3xl text-white">Zero</div><div class="text-xs text-leaf-300 mt-1">Limbah Kimia</div></div>
+    </div>
+  </div>
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-float"><div class="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-1.5"><div class="w-1 h-2.5 bg-leaf-400 rounded-full animate-pulse"></div></div></div>
+</section>
+
+<!-- ========== 1. ABOUT ME ========== -->
+<section id="about" class="py-24 px-6 leaf-pattern">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div class="relative group">
+        <div class="absolute -inset-4 bg-leaf-100 rounded-2xl transform rotate-2 group-hover:rotate-1 transition-transform duration-500"></div>
+        <img src="NAVERA1.jpeg" alt="family" class="relative aspect-[4/3] w-full object-cover rounded-xl shadow-xl">
+        <div class="absolute -bottom-4 -right-4 bg-white rounded-xl shadow-lg p-4 flex items-center gap-3">
+          <div class="w-10 h-10 bg-leaf-100 rounded-full flex items-center justify-center"><i data-lucide="award" class="w-5 h-5 text-leaf-600"></i></div>
+          <div><div class="text-sm font-medium text-stone-900">NAVERA SC</div><div class="text-xs text-stone-500">Sejak 2025</div></div>
+        </div>
+      </div>
+      <div>
+        <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-600 mb-4"><span class="w-6 h-px bg-leaf-400"></span> About Me</span>
+        <h2 class="font-serif text-4xl tracking-tight text-stone-900">Hai, Saya <em class="text-leaf-700">Everleaf</em></h2>
+        <p class="mt-6 text-lg text-stone-500 leading-relaxed">Navera Student Company (Navera SC) is a student company from SMAN 16 Bandung that focuses on sustainable fashion by innovating eco-print. Our mission is to blend creativity, environmental responsibility, and community empowerment by turning natural leaves and flowers into exclusive textile designs.</p>
+        <p class="mt-4 text-lg text-stone-500 leading-relaxed">Our flagship product, the Everleaf Eco-Print Vest, demonstrates how fashion can be both stylish and eco-conscious. Each vest has a unique imprint, representing our commitment to zero waste, local sourcing, and short supply chains that support UMKM and reduce environmental impact.</p>
+        <p class="mt-4 text-lg text-stone-500 leading-relaxed">Navera SC is not only about fashion but also about <strong class="text-stone-700">sustainability and innovation</strong> — showing that students can be at the forefront of creating a greener future.</p>
+        <div class="mt-8 grid grid-cols-2 gap-6">
+          <div class="flex items-start gap-3"><div class="w-8 h-8 bg-leaf-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="heart" class="w-4 h-4 text-leaf-600"></i></div><div><div class="text-sm font-medium text-stone-900">Passion-Driven</div><div class="text-xs text-stone-400">Bukan sekadar bisnis</div></div></div>
+          <div class="flex items-start gap-3"><div class="w-8 h-8 bg-leaf-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="hand-metal" class="w-4 h-4 text-leaf-600"></i></div><div><div class="text-sm font-medium text-stone-900">Hands-On Maker</div><div class="text-xs text-stone-400">Terlibat langsung di setiap proses</div></div></div>
+          <div class="flex items-start gap-3"><div class="w-8 h-8 bg-leaf-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="users" class="w-4 h-4 text-leaf-600"></i></div><div><div class="text-sm font-medium text-stone-900">Community Builder</div><div class="text-xs text-stone-400">25+ anggota SC aktif</div></div></div>
+          <div class="flex items-start gap-3"><div class="w-8 h-8 bg-leaf-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="globe" class="w-4 h-4 text-leaf-600"></i></div><div><div class="text-sm font-medium text-stone-900">Global Mindset</div><div class="text-xs text-stone-400">Local wisdom, global reach</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 2. PRODUCT JOURNEY ========== -->
+<section id="journey" class="py-24 px-6 bg-white">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-20">
+      <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-600 mb-4"><span class="w-6 h-px bg-leaf-400"></span> Product Journey <span class="w-6 h-px bg-leaf-400"></span></span>
+      <h2 class="font-serif text-4xl tracking-tight text-stone-900">From Leaf to <em class="text-leaf-700">Vest</em></h2>
+      <p class="mt-4 text-lg text-stone-500 leading-relaxed">Perjalanan panjang namun penuh cinta — setiap tahap dikerjakan dengan kesabaran dan keahlian tangan-tangan terampil.</p>
+    </div>
+    <div class="journey-line relative">
+      <!-- Step 1 -->
+      <div class="relative flex flex-col md:flex-row items-center gap-8 mb-20">
+        <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1">
+          <span class="inline-block text-xs font-medium uppercase tracking-widest text-leaf-600 mb-2">Step 01</span>
+          <h3 class="font-serif text-2xl text-stone-900">Collecting Leaves & Flowers</h3>
+          <p class="mt-2 text-stone-500 leading-relaxed">We gather fallen leaves and flowers from school grounds, home and Bandung city parks.</p>
+        </div>
+        <div class="relative z-10 w-14 h-14 bg-leaf-600 rounded-full flex items-center justify-center shadow-lg shadow-leaf-600/30 order-1 md:order-2 flex-shrink-0"><i data-lucide="search" class="w-6 h-6 text-white"></i></div>
+        <div class="md:w-1/2 md:pl-12 order-3">
+          <div class="relative group overflow-hidden rounded-xl shadow-md aspect-[3/3]">
+            <img src="FOTO1.jpeg" alt="Pengumpulan daun" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/collecting-leaves/600/600.jpg'">
+            <div class="absolute inset-0 bg-leaf-900/0 group-hover:bg-leaf-900/10 transition-colors"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Step 2 -->
+      <div class="relative flex flex-col md:flex-row items-center gap-8 mb-20">
+        <div class="md:w-1/2 md:pr-12 order-2 md:order-1">
+          <div class="relative group overflow-hidden rounded-xl shadow-md aspect-[5/3]">
+            <img src="FOTO2.jpeg" alt="Pounding" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/pounding-ecoprint/800/480.jpg'">
+            <div class="absolute inset-0 bg-leaf-900/0 group-hover:bg-leaf-900/10 transition-colors"></div>
+          </div>
+        </div>
+        <div class="relative z-10 w-14 h-14 bg-leaf-500 rounded-full flex items-center justify-center shadow-lg shadow-leaf-500/30 order-1 md:order-2 flex-shrink-0"><i data-lucide="hammer" class="w-6 h-6 text-white"></i></div>
+        <div class="md:w-1/2 md:pl-12 order-3">
+          <span class="inline-block text-xs font-medium uppercase tracking-widest text-leaf-600 mb-2">Step 02</span>
+          <h3 class="font-serif text-2xl text-stone-900">Eco-Print Pounding Technique</h3>
+          <p class="mt-2 text-stone-500 leading-relaxed">Leaves are carefully placed on cotton fabric and gently hammered so their natural pigments are released.</p>
+        </div>
+      </div>
+      <!-- Step 3 -->
+      <div class="relative flex flex-col md:flex-row items-center gap-8 mb-20">
+        <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1">
+          <span class="inline-block text-xs font-medium uppercase tracking-widest text-leaf-600 mb-2">Step 03</span>
+          <h3 class="font-serif text-2xl text-stone-900">Fabric Preparation</h3>
+          <p class="mt-2 text-stone-500 leading-relaxed">The eco-printed fabric is washed, dried, and finished to preserve the natural motifs.</p>
+        </div>
+        <div class="relative z-10 w-14 h-14 bg-leaf-400 rounded-full flex items-center justify-center shadow-lg shadow-leaf-400/30 order-1 md:order-2 flex-shrink-0"><i data-lucide="flask-conical" class="w-6 h-6 text-white"></i></div>
+        <div class="md:w-1/2 md:pl-12 order-3">
+          <div class="grid grid-cols-3 gap-3">
+            <div class="relative group overflow-hidden rounded-xl shadow-md aspect-[4/5]">
+              <img src="FOTO3.jpeg" alt="Washing" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/washing-fabric/300/375.jpg'">
+            </div>
+            <div class="relative group overflow-hidden rounded-xl shadow-md aspect-[4/5]">
+              <img src="FOTO3b.jpeg" alt="Drying" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/drying-fabric/300/375.jpg'">
+            </div>
+            <div class="relative group overflow-hidden rounded-xl shadow-md aspect-[4/5]">
+              <img src="FOTO3c.jpeg" alt="Finishing" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/finishing-fabric/300/375.jpg'">
+            </div>
+          </div>
+          <div class="flex justify-between mt-2 px-1">
+            <span class="text-[10px] uppercase tracking-wider text-stone-400 text-center w-1/3">Washed</span>
+            <span class="text-[10px] uppercase tracking-wider text-stone-400 text-center w-1/3">Dried</span>
+            <span class="text-[10px] uppercase tracking-wider text-stone-400 text-center w-1/3">Finishing</span>
+          </div>
+        </div>
+      </div>
+      <!-- Step 4 -->
+      <div class="relative flex flex-col md:flex-row items-center gap-8 mb-20">
+        <div class="md:w-1/2 md:pr-12 order-2 md:order-1">
+          <div class="relative group overflow-hidden rounded-xl shadow-md aspect-[3/4]">
+            <img src="FOTO4.jpeg" alt="Menjahit" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/sewing-tailor/600/800.jpg'">
+            <div class="absolute inset-0 bg-leaf-900/0 group-hover:bg-leaf-900/10 transition-colors"></div>
+          </div>
+        </div>
+        <div class="relative z-10 w-14 h-14 bg-amber-500 rounded-full flex items-center justify-center shadow-lg shadow-amber-500/30 order-1 md:order-2 flex-shrink-0"><i data-lucide="scissors" class="w-6 h-6 text-white"></i></div>
+        <div class="md:w-1/2 md:pl-12 order-3">
+          <span class="inline-block text-xs font-medium uppercase tracking-widest text-amber-600 mb-2">Step 04</span>
+          <h3 class="font-serif text-2xl text-stone-900">Local Tailoring Collaboration</h3>
+          <p class="mt-2 text-stone-500 leading-relaxed">We partner with local MSMEs in Bandung to transform the ecoprinted fabric into stylish vests.</p>
+        </div>
+      </div>
+      <!-- Step 5 -->
+      <div class="relative flex flex-col md:flex-row items-center gap-8">
+        <div class="md:w-1/2 md:pr-12 md:text-right order-2 md:order-1">
+          <span class="inline-block text-xs font-medium uppercase tracking-widest text-leaf-600 mb-2">Step 05</span>
+          <h3 class="font-serif text-2xl text-stone-900">Everleaf Vest ✨</h3>
+          <p class="mt-2 text-stone-500 leading-relaxed">The final product — a sustainable fashion item that combines creativity, environmental responsibility, and community empowerment.</p>
+        </div>
+        <div class="relative z-10 w-14 h-14 bg-leaf-600 rounded-full flex items-center justify-center shadow-lg shadow-leaf-600/30 order-1 md:order-2 flex-shrink-0"><i data-lucide="check" class="w-6 h-6 text-white"></i></div>
+        <div class="md:w-1/2 md:pl-12 order-3">
+          <div class="grid grid-cols-2 gap-3">
+            <div class="col-span-2 relative group overflow-hidden rounded-xl shadow-md aspect-[3/2]">
+              <img src="FOTO5a.jpeg" alt="Tampak Depan Vest" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/vest-front/600/400.jpg'">
+            </div>
+            <div class="col-span-1 relative group overflow-hidden rounded-xl shadow-md aspect-square">
+              <img src="FOTO5b.jpeg" alt="Detail Motif" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/vest-detail/300/300.jpg'">
+            </div>
+            <div class="col-span-1 relative group overflow-hidden rounded-xl shadow-md aspect-square">
+              <img src="FOTO5c.jpeg" alt="Tampak Belakang" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/vest-back/300/300.jpg'">
+            </div>
+            <div class="col-span-1 relative group overflow-hidden rounded-xl shadow-md aspect-square">
+              <img src="FOTO5d.jpeg" alt="Tekstur Kain" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/fabric-texture/300/300.jpg'">
+            </div>
+            <div class="col-span-1 relative group overflow-hidden rounded-xl shadow-md aspect-square">
+              <img src="FOTO5e.jpeg" alt="Kemasan" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='https://picsum.photos/seed/eco-packaging/300/300.jpg'">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 3. LEAF LIBRARY ========== -->
+<section id="leaf-library" class="py-16 px-4 sm:px-6 lg:px-8 bg-stone-50">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- SIDEBAR -->
+      <aside class="w-full lg:w-72 flex-shrink-0">
+        <div class="sticky top-28 bg-white p-6 rounded-2xl border border-stone-200 shadow-sm h-fit">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-serif font-bold text-lg text-stone-900">Filter Pencarian</h3>
+            <button onclick="resetFilters()" class="text-xs text-stone-400 hover:text-leaf-600 font-medium transition-colors">Reset Semua</button>
+          </div>
+          <div class="mb-6">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3">Kategori</h4>
+            <div class="space-y-2">
+              <label class="flex items-center space-x-3 cursor-pointer group custom-checkbox"><input type="checkbox" value="daun" class="hidden filter-input" data-group="category" checked><div class="w-4 h-4 rounded border border-stone-300 flex items-center justify-center transition-all group-hover:border-leaf-500"><i data-lucide="check" class="w-3 h-3 text-white opacity-0 transition-opacity"></i></div><span class="text-sm text-stone-600 group-hover:text-stone-900">🌿 Daun</span></label>
+              <label class="flex items-center space-x-3 cursor-pointer group custom-checkbox"><input type="checkbox" value="bunga" class="hidden filter-input" data-group="category" checked><div class="w-4 h-4 rounded border border-stone-300 flex items-center justify-center transition-all group-hover:border-leaf-500"><i data-lucide="check" class="w-3 h-3 text-white opacity-0 transition-opacity"></i></div><span class="text-sm text-stone-600 group-hover:text-stone-900">🌸 Bunga</span></label>
+              <label class="flex items-center space-x-3 cursor-pointer group custom-checkbox"><input type="checkbox" value="kayu" class="hidden filter-input" data-group="category" checked><div class="w-4 h-4 rounded border border-stone-300 flex items-center justify-center transition-all group-hover:border-leaf-500"><i data-lucide="check" class="w-3 h-3 text-white opacity-0 transition-opacity"></i></div><span class="text-sm text-stone-600 group-hover:text-stone-900">🪵 Kayu & Lainnya</span></label>
+            </div>
+          </div>
+          <hr class="border-stone-100 my-4">
+          <div class="mb-6">
+            <div class="flex justify-between items-center mb-3"><h4 class="text-xs font-bold uppercase tracking-wider text-stone-400">Tingkat Tanin</h4><span class="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">1 - 5</span></div>
+            <div class="flex justify-between gap-1">
+              <label class="cursor-pointer flex-1 text-center custom-checkbox"><input type="checkbox" value="1" class="hidden filter-input" data-group="tannin"><div class="text-xs py-1.5 rounded border border-stone-200 hover:bg-stone-50 transition-all text-stone-500">1</div></label>
+              <label class="cursor-pointer flex-1 text-center custom-checkbox"><input type="checkbox" value="2" class="hidden filter-input" data-group="tannin"><div class="text-xs py-1.5 rounded border border-stone-200 hover:bg-stone-50 transition-all text-stone-500">2</div></label>
+              <label class="cursor-pointer flex-1 text-center custom-checkbox"><input type="checkbox" value="3" class="hidden filter-input" data-group="tannin"><div class="text-xs py-1.5 rounded border border-stone-200 hover:bg-stone-50 transition-all text-stone-500">3</div></label>
+              <label class="cursor-pointer flex-1 text-center custom-checkbox"><input type="checkbox" value="4" class="hidden filter-input" data-group="tannin"><div class="text-xs py-1.5 rounded border border-stone-200 hover:bg-stone-50 transition-all text-stone-500">4</div></label>
+              <label class="cursor-pointer flex-1 text-center custom-checkbox"><input type="checkbox" value="5" class="hidden filter-input" data-group="tannin"><div class="text-xs py-1.5 rounded border border-stone-200 hover:bg-stone-50 transition-all text-stone-500">5</div></label>
+            </div>
+            <p class="text-[10px] text-stone-400 mt-1 text-center">5 = Sangat Tinggi</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3">Warna Pigmen</h4>
+            <div class="flex flex-wrap gap-2">
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="gold" class="hidden filter-input" data-group="color"><div class="w-8 h-8 rounded-full bg-yellow-400 border-2 border-transparent hover:scale-110 transition-transform shadow-sm" title="Gold"></div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="olive" class="hidden filter-input" data-group="color"><div class="w-8 h-8 rounded-full border-2 border-transparent hover:scale-110 transition-transform shadow-sm" style="background:#808000" title="Olive"></div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="red" class="hidden filter-input" data-group="color"><div class="w-8 h-8 rounded-full bg-red-500 border-2 border-transparent hover:scale-110 transition-transform shadow-sm" title="Red"></div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="blue" class="hidden filter-input" data-group="color"><div class="w-8 h-8 rounded-full bg-blue-400 border-2 border-transparent hover:scale-110 transition-transform shadow-sm" title="Blue"></div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="purple" class="hidden filter-input" data-group="color"><div class="w-8 h-8 rounded-full bg-purple-700 border-2 border-transparent hover:scale-110 transition-transform shadow-sm" title="Purple"></div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="brown" class="hidden filter-input" data-group="color"><div class="w-8 h-8 rounded-full bg-stone-700 border-2 border-transparent hover:scale-110 transition-transform shadow-sm" title="Brown"></div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="green" class="hidden filter-input" data-group="color"><div class="w-8 h-8 rounded-full bg-emerald-600 border-2 border-transparent hover:scale-110 transition-transform shadow-sm" title="Green"></div></label>
+            </div>
+          </div>
+          <div class="mb-6">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3">Mordan Disarankan</h4>
+            <div class="space-y-2">
+              <label class="flex items-center space-x-3 cursor-pointer group custom-checkbox"><input type="checkbox" value="alum" class="hidden filter-input" data-group="mordant"><div class="w-4 h-4 rounded border border-stone-300 flex items-center justify-center transition-all group-hover:border-leaf-500"><i data-lucide="check" class="w-3 h-3 text-white opacity-0 transition-opacity"></i></div><span class="text-sm text-stone-600">Alum (Tawas)</span></label>
+              <label class="flex items-center space-x-3 cursor-pointer group custom-checkbox"><input type="checkbox" value="iron" class="hidden filter-input" data-group="mordant"><div class="w-4 h-4 rounded border border-stone-300 flex items-center justify-center transition-all group-hover:border-leaf-500"><i data-lucide="check" class="w-3 h-3 text-white opacity-0 transition-opacity"></i></div><span class="text-sm text-stone-600">Iron (Besi)</span></label>
+              <label class="flex items-center space-x-3 cursor-pointer group custom-checkbox"><input type="checkbox" value="copper" class="hidden filter-input" data-group="mordant"><div class="w-4 h-4 rounded border border-stone-300 flex items-center justify-center transition-all group-hover:border-leaf-500"><i data-lucide="check" class="w-3 h-3 text-white opacity-0 transition-opacity"></i></div><span class="text-sm text-stone-600">Copper (Tembaga)</span></label>
+            </div>
+          </div>
+          <div class="mb-2">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3">Bentuk Daun</h4>
+            <div class="flex flex-wrap gap-2">
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="pinnate" class="hidden filter-input" data-group="shape"><div class="px-3 py-1 rounded-full border border-stone-200 text-xs text-stone-600 hover:border-leaf-500 transition-all">Menyirip</div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="palmate" class="hidden filter-input" data-group="shape"><div class="px-3 py-1 rounded-full border border-stone-200 text-xs text-stone-600 hover:border-leaf-500 transition-all">Menjari</div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="simple" class="hidden filter-input" data-group="shape"><div class="px-3 py-1 rounded-full border border-stone-200 text-xs text-stone-600 hover:border-leaf-500 transition-all">Tunggal</div></label>
+              <label class="cursor-pointer custom-checkbox"><input type="checkbox" value="needle" class="hidden filter-input" data-group="shape"><div class="px-3 py-1 rounded-full border border-stone-200 text-xs text-stone-600 hover:border-leaf-500 transition-all">Jarum/Panjang</div></label>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <!-- GRID -->
+      <section class="flex-1">
+        <div class="flex justify-between items-end mb-6">
+          <div>
+            <h2 class="font-serif text-2xl md:text-3xl text-stone-900">Koleksi <span class="text-leaf-700">Daun</span></h2>
+            <p class="text-stone-500 text-sm mt-1">Menampilkan <span id="item-count" class="font-bold text-stone-900">15</span> bahan alami</p>
+          </div>
+        </div>
+        <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6" id="leafGrid">
+
+          <!-- 1. Daun Jati -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="5" data-color="brown,gold" data-mordant="iron,alum" data-shape="simple">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="JATI.jpeg" alt="Daun Jati" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/teak-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★★★</div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Jati</h4><p class="text-xs text-stone-400 italic mt-0.5">Tectona grandis</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Brown</span><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Gold</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Raja tanin. Menghasilkan cetakan cokelat keemasan yang sangat tahan lama dan tajam.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum, Besi</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Tua</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 2. Daun Pinang -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="4" data-color="blue,purple" data-mordant="iron,alum" data-shape="pinnate">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="PINANG.jpeg" alt="Daun Pinang" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/betel-nut-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★★<span class="text-stone-300">★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Pinang</h4><p class="text-xs text-stone-400 italic mt-0.5">Areca catechu</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Deep Blue</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Daun palem panjang yang kaya serat. Menghasilkan warna biru tua yang elegan.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Segar</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 3. Daun Lanang -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="4" data-color="brown,green" data-mordant="iron" data-shape="pinnate">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="LANANG2.jpeg" alt="Daun Lanang" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/lanang-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★★<span class="text-stone-300">★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Lanang</h4><p class="text-xs text-stone-400 italic mt-0.5">Oroxylum indicum</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Olive</span><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Sage</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Dikenal sebagai pohon patah tulang. Menghasilkan warna hijau/sage yang hangat.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Tunjung</div><div><span class="font-bold text-stone-900">Bagian:</span> Segar</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 4. Daun Pepana -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="2" data-color="blue" data-mordant="alum,copper" data-shape="palmate">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="PEPANA.jpeg" alt="Daun Pepana" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/papaya-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★<span class="text-stone-300">★★★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Pepana</h4><p class="text-xs text-stone-400 italic mt-0.5">Carica papaya (Local Var.)</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Deep Blue</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Variasi lokal daun pepana dengan bentuk menjari besar. Tulang daun tebal menghasilkan cetakan garis jelas.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Tawas</div><div><span class="font-bold text-stone-900">Bagian:</span> Tulang Daun</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 5. Daun Ketapang -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="5" data-color="purple" data-mordant="iron,alum" data-shape="simple">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="KETAPANG.jpeg" alt="Daun Ketapang" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/ketapang-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★★★</div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Ketapang</h4><p class="text-xs text-stone-400 italic mt-0.5">Terminalia catappa</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Deep Purple</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Daun gugur ungu tua dengan tingkat tanin ekstrem. Memberikan cetakan sangat kontras.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Gugur</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 6. Daun Palmate -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="3" data-color="brown,olive" data-mordant="alum" data-shape="palmate">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="PALMATE.jpeg" alt="Daun Palmate" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/palm-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★<span class="text-stone-300">★★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Palmate</h4><p class="text-xs text-stone-400 italic mt-0.5">Areca sp.</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Brown</span><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Tan</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Daun palem menjari khas. Tekstur serat unik, warna kuning zaitun hingga cokelat tanah.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Segar</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 7. Daun Tunogu -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="4" data-color="brown" data-mordant="iron" data-shape="simple">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="TUNOGU.jpeg" alt="Daun Tunogu" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/tunogu-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★★<span class="text-stone-300">★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Tunogu</h4><p class="text-xs text-stone-400 italic mt-0.5">Folium simplex</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Rust</span><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Brown</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Daun lokal unik dengan pigmen kuat. Warna karat oranye hingga cokelat tua yang artistik.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Tunjung</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Tua</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 8. Daun Langang -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="3" data-color="olive,purple" data-mordant="alum" data-shape="pinnate">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="LANGANG.jpeg" alt="Daun Langang" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/langang-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★<span class="text-stone-300">★★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Langang</h4><p class="text-xs text-stone-400 italic mt-0.5">Common Lematis</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Dusty Mauve</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Daun Pulai lonjong menyirip. Hijau sage lembut dan stabil. Cocok untuk latar belakang.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Muda</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 9. Daun Balang -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="4" data-color="brown,gold" data-mordant="iron" data-shape="pinnate">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="BALANG.jpeg" alt="Daun Balang" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/balang-leaf/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★★<span class="text-stone-300">★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Balang</h4><p class="text-xs text-stone-400 italic mt-0.5">Local Spesies</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Purple</span><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Brown</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Daun lokal eksotis. Dengan besi, menghasilkan ungu gelap dan cokelat misterius.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Besi</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Tua</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 10. Ketapang Hijau -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="4" data-color="green" data-mordant="alum" data-shape="pinnate">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="KETAPANG2.jpeg" alt="Ketapang Hijau" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/green-ketapang/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★★<span class="text-stone-300">★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Ketapang Hijau</h4><p class="text-xs text-stone-400 italic mt-0.5">Indian Almond</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Olive Green</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Memberikan warna hijau muda yang segar.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Tawas/Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Segar</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 11. Bunga Hibiscus -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="bunga" data-tannin="3" data-color="red,purple" data-mordant="alum" data-shape="simple">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="HIBISCUS.jpeg" alt="Hibiscus" class="w-full h-full object-cover transition-transform duration-700" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hibiscus-flower/400/300.jpg'">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★★<span class="text-stone-300">★★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Bunga Hibiscus</h4><p class="text-xs text-stone-400 italic mt-0.5">Hibiscus rosa-sinensis</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Dark Purple</span><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Charcoal Grey</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Kaya antosianin, menghasilkan warna merah keabuan eksotis.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Bunga Muda</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 12. Daun Jambu -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="2" data-color="green,gold" data-mordant="alum" data-shape="simple">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="https://picsum.photos/seed/guava-leaf/400/300.jpg" alt="Daun Jambu" class="w-full h-full object-cover transition-transform duration-700">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★<span class="text-stone-300">★★★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Jambu Biji</h4><p class="text-xs text-stone-400 italic mt-0.5">Psidium guajava</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Green</span><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Yellow</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Kaya minyak atsiri. Hijau segar dan kuning muda cerah.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Tua</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 13. Daun Sirsak -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="2" data-color="green" data-mordant="alum" data-shape="simple">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="https://picsum.photos/seed/soursop-leaf/400/300.jpg" alt="Daun Sirsak" class="w-full h-full object-cover transition-transform duration-700">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★★<span class="text-stone-300">★★★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Sirsak</h4><p class="text-xs text-stone-400 italic mt-0.5">Annona muricata</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Deep Green</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Hijau tua stabil dan elegan pada kain.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Segar</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 14. Daun Pakis -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="daun" data-tannin="1" data-color="green,olive" data-mordant="alum" data-shape="needle">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="https://picsum.photos/seed/fern-leaf/400/300.jpg" alt="Daun Pakis" class="w-full h-full object-cover transition-transform duration-700">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★<span class="text-stone-300">★★★★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Daun Pakis</h4><p class="text-xs text-stone-400 italic mt-0.5">Nephrolepis sp.</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Sage</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Warna hijau abu-abu atau cokelat muda. Indah untuk pola isian halus.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Alum</div><div><span class="font-bold text-stone-900">Bagian:</span> Daun Muda</div></div></div></div>
+            </div>
+          </div>
+
+          <!-- 15. Bunga Telang -->
+          <div class="leaf-item bg-white rounded-xl border border-stone-200/50 overflow-hidden hover:shadow-lg hover:border-leaf-300 transition-all duration-300 group" data-type="bunga" data-tannin="1" data-color="purple,blue" data-mordant="alum" data-shape="simple">
+            <div class="relative h-64 card-img-wrap bg-stone-100 cursor-pointer" onclick="toggleLeaf(this)">
+              <img src="https://picsum.photos/seed/butterfly-pea/400/300.jpg" alt="Bunga Telang" class="w-full h-full object-cover transition-transform duration-700">
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md flex items-center gap-1 shadow-sm"><span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">Tanin</span><div class="flex text-amber-500 text-[10px]">★<span class="text-stone-300">★★★★</span></div></div>
+            </div>
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-1 cursor-pointer" onclick="toggleLeaf(this)">
+                <div><h4 class="font-serif text-lg text-stone-900 leading-tight group-hover:text-leaf-700 transition-colors">Bunga Telang</h4><p class="text-xs text-stone-400 italic mt-0.5">Clitoria ternatea</p></div>
+                <i data-lucide="chevron-down" class="w-5 h-5 text-stone-300 transition-transform duration-300 leaf-chev"></i>
+              </div>
+              <div class="mt-3 flex gap-2"><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Blue</span><span class="text-[10px] font-medium px-2 py-0.5 rounded bg-stone-100 text-stone-500 border border-stone-200">Purple</span></div>
+              <div class="leaf-details"><div class="pt-4 mt-4 border-t border-stone-100 space-y-3"><p class="text-xs text-stone-600 leading-relaxed">Pewarna biru alami. Kombinasi asam mengubah jadi ungu dramatis.</p><div class="grid grid-cols-2 gap-2 text-xs"><div><span class="font-bold text-stone-900">Mordan:</span> Tanpa Mordan</div><div><span class="font-bold text-stone-900">Bagian:</span> Kelopak Bunga</div></div></div></div>
+            </div>
+          </div>
+
+        </div>
+        <div id="no-results" class="hidden text-center py-20">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-stone-100 mb-4"><i data-lucide="search-x" class="w-8 h-8 text-stone-400"></i></div>
+          <h3 class="text-lg font-serif text-stone-900">Tidak ada hasil ditemukan</h3>
+          <p class="text-stone-500 text-sm mt-1">Coba kurangi filter pencarian Anda.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+
+<!-- ========== VIDEO SHOWCASE (SIMPLIFIED - NO CRASH) ========== -->
+<section id="video" class="py-24 px-6 bg-stone-900 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-5"><div class="absolute top-20 left-10 text-[10rem] rotate-12">🍃</div><div class="absolute bottom-10 right-10 text-[8rem] -rotate-12">🌿</div></div>
+  <div class="relative z-10 max-w-5xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-400 mb-4"><span class="w-6 h-px bg-leaf-600"></span> Video Gallery <span class="w-6 h-px bg-leaf-600"></span></span>
+      <h2 class="font-serif text-4xl tracking-tight text-white">Saksikan Proses <em class="text-leaf-400">Ecoprint</em> Kami</h2>
+      <p class="mt-4 text-lg text-stone-400 max-w-xl mx-auto leading-relaxed">Dokumentasi lengkap proses pembuatan vest kami.</p>
+    </div>
+    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-stone-700/50 bg-black aspect-video">
+      <video id="main-player" class="w-full h-full object-cover" controls preload="metadata" poster="https://picsum.photos/seed/ecoprint-video-cover/1280/720.jpg">
+        <source src="VIDIO.mp4" type="video/mp4">
+        Browser Anda tidak mendukung tag video.
+      </video>
+    </div>
+    <div class="mt-6 grid sm:grid-cols-3 gap-6">
+      <div class="bg-stone-800/50 border border-stone-700/50 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-leaf-600/20 rounded-lg flex items-center justify-center"><i data-lucide="info" class="w-5 h-5 text-leaf-400"></i></div><h4 class="text-sm font-medium text-white">Tentang Video</h4></div>
+        <p class="text-xs text-stone-400 leading-relaxed">Menampilkan seluruh 5 tahap proses pembuatan vest dari awal hingga akhir.</p>
+      </div>
+      <div class="bg-stone-800/50 border border-stone-700/50 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-amber-600/20 rounded-lg flex items-center justify-center"><i data-lucide="lightbulb" class="w-5 h-5 text-amber-400"></i></div><h4 class="text-sm font-medium text-white">Tips</h4></div>
+        <p class="text-xs text-stone-400 leading-relaxed">Nyalakan suara untuk mendengar suara alami pounding daun. Perhatikan perubahan warna di setiap tahap!</p>
+      </div>
+      <div class="bg-stone-800/50 border border-stone-700/50 rounded-xl p-5">
+        <div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 bg-blue-600/20 rounded-lg flex items-center justify-center"><i data-lucide="share-2" class="w-5 h-5 text-blue-400"></i></div><h4 class="text-sm font-medium text-white">Bagikan</h4></div>
+        <div class="flex gap-2 mt-1"><button class="flex-1 py-2 rounded-lg bg-stone-700/50 text-stone-300 text-xs hover:bg-stone-600/50 transition-colors">Instagram</button><button class="flex-1 py-2 rounded-lg bg-stone-700/50 text-stone-300 text-xs hover:bg-stone-600/50 transition-colors">WhatsApp</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 4. SUSTAINABILITY IMPACT ========== -->
+<section id="sustainability" class="py-24 px-6 bg-leaf-950 text-white overflow-hidden">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-400 mb-4"><span class="w-6 h-px bg-leaf-600"></span> Sustainability Impact <span class="w-6 h-px bg-leaf-600"></span></span>
+      <h2 class="font-serif text-4xl tracking-tight text-white">Dampak Nyata untuk <em class="text-leaf-400">Bumi</em></h2>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      <div class="bg-leaf-900/40 border border-leaf-800/30 rounded-xl p-6 text-center relative overflow-hidden"><div class="stat-shimmer absolute inset-0"></div><div class="relative z-10"><div class="w-12 h-12 mx-auto bg-leaf-800/50 rounded-full flex items-center justify-center mb-3"><i data-lucide="leaf" class="w-6 h-6 text-leaf-400"></i></div><div class="font-serif text-3xl text-white counter" data-target="250">0</div><div class="text-xs text-leaf-400 mt-1">Kg Daun Dimanfaatkan</div></div></div>
+      <div class="bg-leaf-900/40 border border-leaf-800/30 rounded-xl p-6 text-center relative overflow-hidden"><div class="stat-shimmer absolute inset-0"></div><div class="relative z-10"><div class="w-12 h-12 mx-auto bg-leaf-800/50 rounded-full flex items-center justify-center mb-3"><i data-lucide="recycle" class="w-6 h-6 text-leaf-400"></i></div><div class="font-serif text-3xl text-white counter" data-target="180">0</div><div class="text-xs text-leaf-400 mt-1">Kg Limbah Diselamatkan</div></div></div>
+      <div class="bg-leaf-900/40 border border-leaf-800/30 rounded-xl p-6 text-center relative overflow-hidden"><div class="stat-shimmer absolute inset-0"></div><div class="relative z-10"><div class="w-12 h-12 mx-auto bg-leaf-800/50 rounded-full flex items-center justify-center mb-3"><i data-lucide="users" class="w-6 h-6 text-leaf-400"></i></div><div class="font-serif text-3xl text-white counter" data-target="35">0</div><div class="text-xs text-leaf-400 mt-1">UMKM Lokal Didukung</div></div></div>
+      <div class="bg-leaf-900/40 border border-leaf-800/30 rounded-xl p-6 text-center relative overflow-hidden"><div class="stat-shimmer absolute inset-0"></div><div class="relative z-10"><div class="w-12 h-12 mx-auto bg-leaf-800/50 rounded-full flex items-center justify-center mb-3"><i data-lucide="cloud-off" class="w-6 h-6 text-leaf-400"></i></div><div class="font-serif text-3xl text-white"><span class="counter" data-target="85">0</span>%</div><div class="text-xs text-leaf-400 mt-1">Pengurangan Karbon</div></div></div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-leaf-900/40 border border-leaf-800/30 rounded-xl p-8">
+        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 bg-leaf-800/50 rounded-lg flex items-center justify-center"><i data-lucide="git-branch" class="w-5 h-5 text-leaf-400"></i></div><h3 class="font-serif text-xl text-white">Supply Chain Pendek</h3></div>
+        <ul class="space-y-3"><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400">Daun dari radius <strong class="text-white">&lt;50km</strong> dari workshop</p></li><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400">Tanpa perantara — petani langsung ke produsen</p></li><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400">Pewarna dari upcycling limbah kulit manggis & kayu secang</p></li></ul>
+      </div>
+      <div class="bg-leaf-900/40 border border-leaf-800/30 rounded-xl p-8">
+        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 bg-leaf-800/50 rounded-lg flex items-center justify-center"><i data-lucide="heart-handshake" class="w-5 h-5 text-leaf-400"></i></div><h3 class="font-serif text-xl text-white">Eco Creative Day</h3></div>
+        <ul class="space-y-3"><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400">Workshop ecoprint gratis — <strong class="text-white">120+ peserta</strong> terlatih</p></li><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400">Pemberdayaan ibu rumah tangga menjadi crafter mandiri</p></li><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400">Kolaborasi dengan sekolah vokasi untuk kurikulum fashion berkelanjutan</p></li></ul>
+      </div>
+      <div class="bg-leaf-900/40 border border-leaf-800/30 rounded-xl p-8">
+        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 bg-leaf-800/50 rounded-lg flex items-center justify-center"><i data-lucide="bar-chart-3" class="w-5 h-5 text-leaf-400"></i></div><h3 class="font-serif text-xl text-white">Jejak Karbon</h3></div>
+        <ul class="space-y-3"><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400"><strong class="text-white">0 bahan kimia sintetis</strong> digunakan</p></li><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400">Kemasan biodegradable dari kertas daur ulang</p></li><li class="flex items-start gap-2.5"><div class="w-1.5 h-1.5 bg-leaf-400 rounded-full mt-2 flex-shrink-0"></div><p class="text-sm text-stone-400">Air rebusan daun diolah menjadi kompos</p></li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 5. CARE INSTRUCTIONS ========== -->
+<section id="care" class="py-24 px-6 bg-white">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-600 mb-4"><span class="w-6 h-px bg-leaf-400"></span> Care Instructions <span class="w-6 h-px bg-leaf-400"></span></span>
+      <h2 class="font-serif text-4xl tracking-tight text-stone-900">Rawat Vest, <em class="text-leaf-700">Jaga Cerita</em></h2>
+    </div>
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="bg-leaf-50 rounded-2xl p-8 border border-leaf-200/50">
+        <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 bg-leaf-600 rounded-full flex items-center justify-center"><i data-lucide="check" class="w-5 h-5 text-white"></i></div><h3 class="font-serif text-xl text-stone-900">Yang Bisa Dilakukan</h3></div>
+        <div class="space-y-5" style="counter-reset:care">
+          <div class="flex items-start gap-4 care-num" style="background:#dcfce7"><p class="text-sm text-stone-600 leading-relaxed pt-0.5 pl-1"><strong>Cuci tangan</strong> dengan air dingin menggunakan deterjen lembut.</p></div>
+          <div class="flex items-start gap-4 care-num" style="background:#dcfce7"><p class="text-sm text-stone-600 leading-relaxed pt-0.5 pl-1"><strong>Jemur terbalik</strong> di tempat teduh.</p></div>
+          <div class="flex items-start gap-4 care-num" style="background:#dcfce7"><p class="text-sm text-stone-600 leading-relaxed pt-0.5 pl-1"><strong>Setrika suhu rendah</strong> dari bagian dalam kain.</p></div>
+          <div class="flex items-start gap-4 care-num" style="background:#dcfce7"><p class="text-sm text-stone-600 leading-relaxed pt-0.5 pl-1"><strong>Simpan gantung</strong> dengan hanger bahu lebar.</p></div>
+          <div class="flex items-start gap-4 care-num" style="background:#dcfce7"><p class="text-sm text-stone-600 leading-relaxed pt-0.5 pl-1"><strong>Pakai dry leaf</strong> dalam lemari sebagai pengharum alami.</p></div>
+        </div>
+      </div>
+      <div class="bg-red-50 rounded-2xl p-8 border border-red-200/50">
+        <div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center"><i data-lucide="x" class="w-5 h-5 text-white"></i></div><h3 class="font-serif text-xl text-stone-900">Yang Harus Dihindari</h3></div>
+        <div class="space-y-5">
+          <div class="flex items-start gap-4"><div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="ban" class="w-4 h-4 text-red-500"></i></div><p class="text-sm text-stone-600 leading-relaxed pt-0.5"><strong>Jangan gunakan pemutih</strong> atau deterjen berbahan keras.</p></div>
+          <div class="flex items-start gap-4"><div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="ban" class="w-4 h-4 text-red-500"></i></div><p class="text-sm text-stone-600 leading-relaxed pt-0.5"><strong>Jangan mesin cuci</strong> atau keringkan dengan mesin.</p></div>
+          <div class="flex items-start gap-4"><div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="ban" class="w-4 h-4 text-red-500"></i></div><p class="text-sm text-stone-600 leading-relaxed pt-0.5"><strong>Jangan merendam berhari-hari.</strong></p></div>
+          <div class="flex items-start gap-4"><div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="ban" class="w-4 h-4 text-red-500"></i></div><p class="text-sm text-stone-600 leading-relaxed pt-0.5"><strong>Jangan setrika panas</strong> langsung di motif.</p></div>
+          <div class="flex items-start gap-4"><div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"><i data-lucide="ban" class="w-4 h-4 text-red-500"></i></div><p class="text-sm text-stone-600 leading-relaxed pt-0.5"><strong>Jangan expose terus-menerus</strong> ke cahaya kuat.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 bg-amber-50 border border-amber-200/50 rounded-xl p-6 flex items-start gap-4">
+      <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0"><i data-lucide="sparkles" class="w-5 h-5 text-amber-600"></i></div>
+      <div><h4 class="text-sm font-medium text-stone-900">Karakter Unik Produk Alami</h4><p class="text-xs text-stone-500 mt-1 leading-relaxed">Pigmen ecoprint bersifat <strong>living color</strong> — warna bisa sedikit berubah seiring waktu. Ini bukan cacat, tapi <em>signature of nature</em>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 6. QR TRACEABILITY ========== -->
+<section class="py-24 px-6 bg-stone-50">
+  <div class="max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <div class="relative">
+        <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 border border-stone-200/50">
+          <div class="relative aspect-[3/4] bg-leaf-50 rounded-xl overflow-hidden">
+            <img src="https://picsum.photos/seed/ecoprint-vest-qr/600/800.jpg" alt="Vest dengan QR" class="w-full h-full object-cover">
+            <div class="absolute bottom-5 right-5 bg-white rounded-xl p-3 shadow-lg qr-glow">
+              <div class="w-20 h-20 bg-stone-100 rounded-lg flex items-center justify-center relative overflow-hidden">
+                <div class="grid grid-cols-7 gap-[2px] w-16 h-16">
+                  <div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div>
+                  <div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div>
+                  <div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-white"></div>
+                  <div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-leaf-600 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div>
+                  <div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div>
+                  <div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div>
+                  <div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-white"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div><div class="bg-stone-800 rounded-[1px]"></div>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center"><div class="w-5 h-5 bg-white rounded-sm flex items-center justify-center"><i data-lucide="leaf" class="w-3 h-3 text-leaf-600"></i></div></div>
+              </div>
+            </div>
+            <div class="absolute bottom-5 right-5 w-[6.5rem] h-[6.5rem] pointer-events-none overflow-hidden rounded-xl"><div class="w-full h-6 bg-leaf-400/30 scan-anim"></div></div>
+          </div>
+          <p class="text-center text-xs text-stone-400 mt-4">Scan QR pada label vest Anda →</p>
+        </div>
+      </div>
+      <div>
+        <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-600 mb-4"><span class="w-6 h-px bg-leaf-400"></span> QR Traceability</span>
+        <h2 class="font-serif text-4xl tracking-tight text-stone-900">Setiap Vest Punya <em class="text-leaf-700">Cerita</em></h2>
+        <p class="mt-6 text-lg text-stone-500 leading-relaxed">Setiap vest dilengkapi QR code unik yang menghubungkan ke halaman cerita produk.</p>
+        <div class="mt-8 space-y-5">
+          <div class="flex items-start gap-4"><div class="w-10 h-10 bg-leaf-100 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="map-pin" class="w-5 h-5 text-leaf-600"></i></div><div><div class="text-sm font-medium text-stone-900">Asal Bahan</div><div class="text-xs text-stone-400 mt-0.5">Tahu persis dari mana daun dan pewarna berasal</div></div></div>
+          <div class="flex items-start gap-4"><div class="w-10 h-10 bg-leaf-100 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="scan-line" class="w-5 h-5 text-leaf-600"></i></div><div><div class="text-sm font-medium text-stone-900">Jenis Daun</div><div class="text-xs text-stone-400 mt-0.5">Identifikasi lengkap setiap spesies</div></div></div>
+          <div class="flex items-start gap-4"><div class="w-10 h-10 bg-leaf-100 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="user" class="w-5 h-5 text-leaf-600"></i></div><div><div class="text-sm font-medium text-stone-900">Siapa yang Menjahit</div><div class="text-xs text-stone-400 mt-0.5">Nama dan foto penjahit</div></div></div>
+          <div class="flex items-start gap-4"><div class="w-10 h-10 bg-leaf-100 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="calendar-check" class="w-5 h-5 text-leaf-600"></i></div><div><div class="text-sm font-medium text-stone-900">Tanggal Pembuatan</div><div class="text-xs text-stone-400 mt-0.5">Traceable dari awal hingga selesai</div></div></div>
+        </div>
+        <div class="mt-8 bg-white rounded-xl border border-stone-200/50 p-5">
+          <div class="text-xs font-medium text-stone-500 uppercase tracking-widest mb-3">Preview Halaman QR</div>
+          <div class="bg-stone-50 rounded-lg p-4 space-y-2.5 text-xs">
+            <div class="flex justify-between"><span class="text-stone-400">Produk ID</span><span class="font-mono text-stone-700 font-medium">NYV-2025-0847</span></div>
+            <div class="flex justify-between"><span class="text-stone-400">Daun</span><span class="text-stone-700">Jati, Pakis, Pepaya</span></div>
+            <div class="flex justify-between"><span class="text-stone-400">Pewarna</span><span class="text-stone-700">Kayu Secang</span></div>
+            <div class="flex justify-between"><span class="text-stone-400">Penjahit</span><span class="text-stone-700">Ibu Hartini, Semarang</span></div>
+            <div class="flex justify-between"><span class="text-stone-400">Tanggal</span><span class="text-stone-700">15 Jan 2025</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 7. TESTIMONIALS ========== -->
+<section id="community" class="py-24 px-6 bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-600 mb-4"><span class="w-6 h-px bg-leaf-400"></span> Community Voices <span class="w-6 h-px bg-leaf-400"></span></span>
+      <h2 class="font-serif text-4xl tracking-tight text-stone-900">Suara <em class="text-leaf-700">Komunitas</em></h2>
+    </div>
+    <div class="flex justify-center gap-3 mb-10">
+      <button class="ctab active px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-leaf-600 text-white shadow-lg shadow-leaf-600/20" onclick="switchTab('customers',this)">Pelanggan</button>
+      <button class="ctab px-5 py-2.5 rounded-full text-sm font-medium transition-all bg-stone-50 text-stone-600 border border-stone-200 hover:bg-stone-100" onclick="switchTab('makers',this)">Anggota SC</button>
+    </div>
+    <div id="tab-customers" class="tab-panel">
+      <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-1 mb-3"><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i></div><p class="text-stone-600 leading-relaxed">"Motifnya benar-benar unik! Setelah scan QR, mereka kagum bisa lihat proses pembuatannya."</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-leaf-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-leaf-700">SA</span></div><div><div class="text-sm font-medium text-stone-900">Siti Aminah</div><div class="text-xs text-stone-400">HR Manager, Jakarta</div></div></div></div>
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-1 mb-3"><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i></div><p class="text-stone-600 leading-relaxed">"Vest Manggis Purple langsung jatuh cinta. Tahu itu dari limbah kulit manggis — so meaningful!"</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-purple-700">DW</span></div><div><div class="text-sm font-medium text-stone-900">Dewi Wulandari</div><div class="text-xs text-stone-400">Content Creator, Surabaya</div></div></div></div>
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-1 mb-3"><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-stone-200 fill-stone-200"></i></div><p class="text-stone-600 leading-relaxed">"6 bulan pakai vest Jati Classic, warnanya masih bagus. Cuci tangan dan jemur teduh itu beneran bikin awet."</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-amber-700">BP</span></div><div><div class="text-sm font-medium text-stone-900">Budi Prasetyo</div><div class="text-xs text-stone-400">Architect, Bandung</div></div></div></div>
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-1 mb-3"><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i></div><p class="text-stone-600 leading-relaxed">"Dia sangat terkejut saat scan QR dan nemukan foto penjahitnya. Personal touch yang luar biasa."</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-blue-700">RK</span></div><div><div class="text-sm font-medium text-stone-900">Rina Kartika</div><div class="text-xs text-stone-400">Dokter, Malang</div></div></div></div>
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-1 mb-3"><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i></div><p class="text-stone-600 leading-relaxed">"Beli 3 vest sekaligus — semua motifnya beda! Kualitas jahitan rapi. Pasti repeat order."</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-green-700">AH</span></div><div><div class="text-sm font-medium text-stone-900">Andi Hermawan</div><div class="text-xs text-stone-400">Entrepreneur, Bali</div></div></div></div>
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-1 mb-3"><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-amber-400 fill-amber-400"></i><i data-lucide="star" class="w-4 h-4 text-stone-200 fill-stone-200"></i></div><p class="text-stone-600 leading-relaxed">"Packing-nya cantik dan sustainable. Dikirim pakai box kertas tanpa plastik."</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-pink-700">FN</span></div><div><div class="text-sm font-medium text-stone-900">Fitri Nuraini</div><div class="text-xs text-stone-400">Lecturer, Yogyakarta</div></div></div></div>
+      </div>
+    </div>
+    <div id="tab-makers" class="tab-panel hidden">
+      <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 bg-leaf-100 rounded-full flex items-center justify-center"><i data-lucide="scissors" class="w-3 h-3 text-leaf-600"></i></div><span class="text-xs font-medium text-leaf-600">Penjahit</span></div><p class="text-stone-600 leading-relaxed">"Sejak gabung Navera SC, saya bangga nama saya tertera di setiap vest lewat QR code."</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-blue-700">IH</span></div><div><div class="text-sm font-medium text-stone-900">Ibu Hartini</div><div class="text-xs text-stone-400">Penjahit, Semarang</div></div></div></div>
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 bg-leaf-100 rounded-full flex items-center justify-center"><i data-lucide="sprout" class="w-3 h-3 text-leaf-600"></i></div><span class="text-xs font-medium text-leaf-600">Petani Mitra</span></div><p class="text-stone-600 leading-relaxed">"Daun jati yang dulu cuma dibakar, sekarang bisa dijual ke Navera. Anak saya bangga."</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-green-700">PS</span></div><div><div class="text-sm font-medium text-stone-900">Pak Suryadi</div><div class="text-xs text-stone-400">Petani Jati, Blora</div></div></div></div>
+        <div class="break-inside-avoid bg-stone-50 rounded-xl p-6 border border-stone-200/50 hover:shadow-md transition-shadow"><div class="flex items-center gap-2 mb-3"><div class="w-6 h-6 bg-leaf-100 rounded-full flex items-center justify-center"><i data-lucide="palette" class="w-3 h-3 text-leaf-600"></i></div><span class="text-xs font-medium text-leaf-600">Ecoprint Artist</span></div><p class="text-stone-600 leading-relaxed">"Setiap kali pounding daun rasanya seperti meditasi. Hasil karya saya dipakai orang — itu yang bikin semangat."</p><div class="flex items-center gap-3 mt-4 pt-4 border-t border-stone-100"><div class="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center"><span class="text-sm font-medium text-pink-700">MN</span></div><div><div class="text-sm font-medium text-stone-900">Maya Nurhaliza</div><div class="text-xs text-stone-400">Ecoprint Artist, Yogyakarta</div></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 8. FUTURE INNOVATION ========== -->
+<section id="future" class="py-24 px-6 bg-stone-50 leaf-pattern">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center max-w-2xl mx-auto mb-16">
+      <span class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-leaf-600 mb-4"><span class="w-6 h-px bg-leaf-400"></span> Roadmap <span class="w-6 h-px bg-leaf-400"></span></span>
+      <h2 class="font-serif text-4xl tracking-tight text-stone-900">Visi <em class="text-leaf-700">Masa Depan</em> Kami</h2>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="bg-white rounded-xl p-6 border-2 border-leaf-300 relative"><div class="absolute -top-3 left-6 bg-leaf-600 text-white text-xs font-medium px-3 py-1 rounded-full">Sekarang</div><div class="w-14 h-14 bg-leaf-100 rounded-xl flex items-center justify-center mb-4 mt-2"><i data-lucide="shirt" class="w-7 h-7 text-leaf-600"></i></div><h4 class="font-serif text-lg text-stone-900">Ecoprint Vest</h4><p class="text-xs text-stone-500 mt-2 leading-relaxed">3 series aktif: Earth Tone, Royal, Tropical.</p><div class="mt-4 flex items-center gap-1.5"><span class="w-2 h-2 bg-leaf-500 rounded-full animate-pulse"></span><span class="text-xs text-leaf-600 font-medium">Aktif</span></div></div>
+      <div class="bg-white rounded-xl p-6 border border-stone-200/50 relative opacity-75"><div class="absolute -top-3 left-6 bg-stone-400 text-white text-xs font-medium px-3 py-1 rounded-full">Q2 2025</div><div class="w-14 h-14 bg-stone-100 rounded-xl flex items-center justify-center mb-4 mt-2"><i data-lucide="shopping-bag" class="w-7 h-7 text-stone-500"></i></div><h4 class="font-serif text-lg text-stone-900">Tote Bag</h4><p class="text-xs text-stone-500 mt-2 leading-relaxed">Tote bag ecoprint kanvas tebal.</p></div>
+      <div class="bg-white rounded-xl p-6 border border-stone-200/50 relative opacity-55"><div class="absolute -top-3 left-6 bg-stone-300 text-white text-xs font-medium px-3 py-1 rounded-full">Q3 2025</div><div class="w-14 h-14 bg-stone-100 rounded-xl flex items-center justify-center mb-4 mt-2"><i data-lucide="ribbon" class="w-7 h-7 text-stone-400"></i></div><h4 class="font-serif text-lg text-stone-900">Scarf & Wrap</h4><p class="text-xs text-stone-500 mt-2 leading-relaxed">Scarf sutra dan katun ecoprint.</p></div>
+      <div class="bg-white rounded-xl p-6 border border-stone-200/50 relative opacity-35"><div class="absolute -top-3 left-6 bg-stone-200 text-stone-500 text-xs font-medium px-3 py-1 rounded-full">Q4 2025</div><div class="w-14 h-14 bg-stone-100 rounded-xl flex items-center justify-center mb-4 mt-2"><i data-lucide="lamp" class="w-7 h-7 text-stone-400"></i></div><h4 class="font-serif text-lg text-stone-900">Home Décor</h4><p class="text-xs text-stone-500 mt-2 leading-relaxed">Table runner, cushion cover, wall hanging.</p></div>
+    </div>
+    <div class="mt-12 text-center bg-white rounded-2xl p-8 md:p-10 border border-stone-200/50">
+      <i data-lucide="quote" class="w-8 h-8 text-leaf-200 mx-auto mb-4"></i>
+      <p class="font-serif text-xl md:text-2xl text-stone-700 leading-relaxed max-w-2xl mx-auto">"Kami bermimpi bahwa suatu hari, setiap rumah di Indonesia memiliki setidaknya satu produk ecoprint — dan setiap produk itu punya cerita yang bisa dilacak hingga ke daun asalnya."</p>
+      <div class="mt-4 text-sm text-leaf-600 font-medium">— Tim Navera SC</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="bg-stone-900 text-stone-400 pt-16 pb-8 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid md:grid-cols-4 gap-10 pb-12 border-b border-stone-800">
+      <div class="md:col-span-1">
+        <div class="flex items-center gap-2 mb-4"><div class="w-8 h-8 bg-leaf-600 rounded-full flex items-center justify-center"><i data-lucide="leaf" class="w-4 h-4 text-white"></i></div><div><span class="font-serif text-base font-medium text-white">Eferleaf</span><span class="text-leaf-400 font-serif text-base italic ml-1">Nyanavera</span></div></div>
+        <p class="text-sm text-stone-500 leading-relaxed">Navera Sustainable Craft — mengubah daun menjadi fashion berkelanjutan.</p>
+        <div class="flex items-center gap-3 mt-5">
+          <a href="#" class="w-9 h-9 rounded-full bg-stone-800 flex items-center justify-center hover:bg-leaf-600 transition-colors"><i data-lucide="instagram" class="w-4 h-4 text-stone-400"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-stone-800 flex items-center justify-center hover:bg-leaf-600 transition-colors"><i data-lucide="facebook" class="w-4 h-4 text-stone-400"></i></a>
+          <a href="https://wa.me/6281234567890" target="_blank" class="w-9 h-9 rounded-full bg-stone-800 flex items-center justify-center hover:bg-green-600 transition-colors"><i data-lucide="message-circle" class="w-4 h-4 text-stone-400"></i></a>
+        </div>
+      </div>
+      <div><h4 class="text-sm font-medium text-white mb-4">Navigasi</h4><ul class="space-y-2.5"><li
